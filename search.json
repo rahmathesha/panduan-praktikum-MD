@@ -1,0 +1,202 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Panduan Praktikum Manajemen Data",
+    "section": "",
+    "text": "Kata Pengantar\nPanduan praktikum manajemen data ini disusun menjadi tiga bagian. Bagian 1 adalah persiapan pengelolaan data menggunakan R. Bagian ini dimulai dengan membuat project di R Studio. Tujuannya adalah untuk membangun kebiasaan bekerja di dalam sebuah kerangka sehingga baik file .R dan data set .csv tidak berpencar di directory yang berbeda.\nBagian 2 adalah pengelolaan data dengan bahasa dasar R. Yaitu, memanfaatkan perintah bawaan yang telah disediakan R. Selain itu, dalam panduan ini juga menggunakan tata bahasa elegan yang ditawarkan oleh R menggunakan dplyr karya fenomenal Wickham et al. (2023).\nBagian 3 memperkenalkan pembuatan basis data menggunakan BigQuery. Pengelolaan basis data menggunakan bahasa structured query language (SQL). Untuk kebutuhan analisis data, maka R disambungkan dengan basis data.\nAkhirnya, panduan ini merupakan sebagai sumber belajar yang tidak lepas dari berbagai kekurangan. Maka penulis menerima kritik dan saran membangun untuk mengoptimalkan panduan ini. Terima kasih kepada Posit PBC yang telah membuat layanan Quarto book sehingga membantu penyelesaian penyusunan panduan ini.\nTerima kasih kepada Mentor Dr. Ruliana, S.Pd., M.Si. dan Coach Suhanda, S.Pd., M.A. yang telah memberikan bimbingan dalam penyusunan panduan praktikum ini. Terima kasih kepada Tim penggampu mata kuliah Manajemen Data, Ansari Saleh Ahmar, Ph.D., Zakiyah Mar’ah, M.Si. dan Hardianti Hafid, M.Si. yang meluangkan waktu mendiskusikan penyusunan panduan praktikum ini. Serta kepada seluruh dosen dan admin Prodi Statistika yang telah memberikan bantuannya selama aktualisasi Latsar.\n\nSemoga panduan ini bermanfaat\n\n\n\n\n\nWickham, Hadley, Romain François, Lionel Henry, Kirill Müller, and Davis Vaughan. 2023. “Dplyr: A Grammar of Data Manipulation.” https://CRAN.R-project.org/package=dplyr.",
+    "crumbs": [
+      "Kata Pengantar"
+    ]
+  },
+  {
+    "objectID": "intro.html",
+    "href": "intro.html",
+    "title": "1  Pengantar",
+    "section": "",
+    "text": "1.1 Pembuatan project\nSebelum memulai menggunakan R sebaiknya kita membuat project sehingga semua file yang digunakan berada dalam sebuah directory. Tindakan ini dapat membuat pekerjaan menjadi lebih mudah tanpa harus memperhatikan lokasi file yang akan digunakan, baik file .R maupun file data set.\nAdapun langkah-langkah pembuatan project setelah membuka R Studio adalah sebagai berikut:\nSetelah membuat project sebagaimana diilustrasikan pada Gambar 1.1, maka R Studio menampilkan lembar kerja seperti pada Gambar 1.2.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Pengantar</span>"
+    ]
+  },
+  {
+    "objectID": "intro.html#pembuatan-project",
+    "href": "intro.html#pembuatan-project",
+    "title": "1  Pengantar",
+    "section": "",
+    "text": "Memilih menu file kemudian memilih New Project.\nMemilih pilihan New Directory untuk untuk membuat project baru bukan yang sudah ada sebelumnya.\nMemilih New Project.\nMenuliskan nama project, misal [MD] Labs, kemudian memilih lokasi penyimpanan project dengan menekan pilihan Browse, terakhir menekan pilihan Create Project.\n\n\n\n\n\n\n\nFigure 1.1: Langkah pembuatan project\n\n\n\n\n\n\n\n\n\n\nFigure 1.2: Tampilan project yang dibuat",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Pengantar</span>"
+    ]
+  },
+  {
+    "objectID": "intro.html#suitobjek",
+    "href": "intro.html#suitobjek",
+    "title": "1  Pengantar",
+    "section": "1.2 Penyesuaian kelas objek",
+    "text": "1.2 Penyesuaian kelas objek\nPengelolaan data terlebih dahulu dimulai dengan menyesuaikan kelas objek dengan kasusnya. Misal:\n\nuntuk informasi harga satuan barang maka kelasnya bisa berupa numeric atau integer;\nuntuk informasi brand barang maka kelasnya bisa berupa character atau factor.\nuntuk informasi tanggal pembelian maka kelasnya bisa berupa POSIXct.\n\n\n\n\n\n\n\nIlustrasi\n\n\n\nRekapitulasi data pembelian barang di sebuah toko online pada tahun 2019 disimpan dalam file pembelian.csv. Untuk mengelola informasi pembelian tersebut maka terlebih dahulu memeriksa kelas objek dengan menampilkan struktur data.\n\n\n\nraw_data &lt;- read.csv('pembelian.csv', sep = ',')\nstr(raw_data)\n\n'data.frame':   5000 obs. of  6 variables:\n $ order_date : chr  \"2019-10-17\" \"2019-10-24\" \"2019-11-03\" \"2019-08-19\" ...\n $ customer_id: int  14004 17220 16518 16364 15696 12748 16791 13069 16873 14723 ...\n $ product_id : chr  \"P1910\" \"P2934\" \"P0908\" \"P0128\" ...\n $ brand      : chr  \"BRAND_J\" \"BRAND_R\" \"BRAND_C\" \"BRAND_A\" ...\n $ quantity   : int  10 2 8 4 2 4 1 2 32 2 ...\n $ item_price : int  740000 604000 1045000 205000 4475000 520000 1465000 205000 450000 149000 ...\n\n\nBerdasarkan struktur dari raw_data diketahui bahwa kelas objek dari order_date perlu diubah menjadi POSIXct. Selain itu, kelas objek brand diubah menjadi factor dan item price diubah menjadi numeric. Berikut perintah yang bisa digunakan.\n\nraw_data$order_date &lt;- as.POSIXct(raw_data$order_date)\nraw_data$brand &lt;- as.factor(raw_data$brand)\nraw_data$item_price &lt;- as.numeric(raw_data$item_price)\nstr(raw_data)\n\n'data.frame':   5000 obs. of  6 variables:\n $ order_date : POSIXct, format: \"2019-10-17\" \"2019-10-24\" ...\n $ customer_id: int  14004 17220 16518 16364 15696 12748 16791 13069 16873 14723 ...\n $ product_id : chr  \"P1910\" \"P2934\" \"P0908\" \"P0128\" ...\n $ brand      : Factor w/ 10 levels \"BRAND_A\",\"BRAND_B\",..: 5 8 3 1 8 3 3 9 9 4 ...\n $ quantity   : int  10 2 8 4 2 4 1 2 32 2 ...\n $ item_price : num  740000 604000 1045000 205000 4475000 ...",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Pengantar</span>"
+    ]
+  },
+  {
+    "objectID": "missing-value.html",
+    "href": "missing-value.html",
+    "title": "2  Missing Value",
+    "section": "",
+    "text": "2.1 Deteksi data hilang\nPada kondisi ini, ada dua hal yang perlu dilakukan. Pertama, memeriksa apakah pada sebuah data set terdapat data yang hilang. Jika ada data yang hilang, maka kedua adalah menangani data hilang tersebut.\nMisal pada data set pembelian- dengan nama file missing-value.csv- berikut, pemeriksaan apakah terdapat missing value atau tidak menggunakan R dapat dilakukan dengan beberapa cara diantaranya adalah:\ndata &lt;- read.csv('missing-value.csv', sep = ',', na.strings = '')\n(colSums(is.na(data)))\norder_date\ncustomer_id\nproduct_id\nbrand\nquantity\nitem_price\n\n\n\n\n0\n0\n0\n1\n0\n1\nPerhatikan bahwa, pada perintah import data, terdapat tambahan perintah na.strings = ''. Perintah tersebut digunakan untuk mengakomodasi missing value dari nilai objek yang sifatnya kategorik. Jika informasi yang sifatnya kategorik dari sebuah objek ternyata kosong, maka R akan menerjemahkannya sebagai NA.\nBerikutnya adalah, mengidentifikasi berapa banyak missing value dari data pembelian. Untuk mengetahui hal tersebut, maka perintah yang dapat digunakan adalah colSums(is.na(data)).\nSebagaimana ilustrasi di atas, ternyata terdapat missing value pada kolom brand yang sifatnya kategorik dan item price yang sifatnya numerik.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>*Missing Value*</span>"
+    ]
+  },
+  {
+    "objectID": "missing-value.html#penanganan-data-hilang",
+    "href": "missing-value.html#penanganan-data-hilang",
+    "title": "2  Missing Value",
+    "section": "2.2 Penanganan data hilang",
+    "text": "2.2 Penanganan data hilang\nJika pada data set yang digunakan terdapat data hilang, maka pilihan penanganan yang dapat dilakukan adalah mengeluarkan objek yang memiliki data hilang atau mengganti nilai yang hilang. Untuk melakukan kedua pilihan tersebut, maka dibutuhkan informasi baris dari objek-objek yang memiliki data hilang. Perintah R yang dapat digunakan untuk tujuan tersebut diantaranya adalah sebagai berikut.\n\ndata[!complete.cases(data), ]\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n \norder_date\ncustomer_id\nproduct_id\nbrand\nquantity\nitem_price\n\n\n\n\n21\n9/11/2019\n15786\nP3273\nBRAND_S\n12\nNA\n\n\n1990\n9/2/2019\n14415\nP2094\nNA\n10\n590000\n\n\n\n\n\nMaksud dari perintah di atas adalah mengidentifikasi baris dengan nilai yang kosong pada data set data. Hasilnya, diperoleh bahwa pada baris ke-21 adalah item price dan pada baris ke-1990 informasi yang kosong adalah nama brand.\n\n2.2.1 Mengeluarkan objek\nPenanganan data hilang dengan mengeluarkan objek berisi NA adalah pilihan yang paling mudah untuk dilakukan. Akan tetapi, pilihan ini sebaiknya dilakukan jika hanya sedikit data hilang. Karena jika sebaliknya, maka banyak objek yang dikeluarkan dan banyak pula informasi yang hilang.\nKarena hanya dua objek yang memuat nilai kosong, maka kedua objek tersebut akan dikeluarkan. Perintah R yang dapat dilakukan diantaranya adalah sebagai berikut:\n\ndrop_na &lt;- data[-c(21, 1990),]\ncolSums(is.na(drop_na))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\norder_date\ncustomer_id\nproduct_id\nbrand\nquantity\nitem_price\n\n\n\n\n0\n0\n0\n0\n0\n0\n\n\n\n\n\nSetelah data hilang dikeluarkan maka sebaiknya diperiksa kembali apakah data hilang tersebut berhasil dikeluarkan dengan menggunakan perintah sebagaimana memeriksa data hilang sebelumnya.\n\n\n2.2.2 Mengganti nilai objek yang hilang\nPilihan penanganan data hilang berikutnya adalah mengganti nilai yang bernilai NA. Nama lain dari penangan ini adalah imputasi. Hal yang perlu diperhatikan adalah penggantian nilai ini bisa berdasarkan dari informasi ahli atau berdasarkan dengan statistik data. Pada panduan ini, imputasi dilakukan berdasarkan statistik data dengan menggunakan nilai modus untuk nilai yang sifatnya kategorik dan nilai median untuk nilai yang sifatnya numerik.\nUntuk mendapatkan modus dari brand, maka penggunaan tabel frekuensi adalah alat bantu yang tepat dan mudah sebagaimana yang disajikan pada tabel di berikut.\n\ntable(data$brand)\n\n\nBRAND_A BRAND_B BRAND_C BRAND_H BRAND_J BRAND_L BRAND_P BRAND_R BRAND_S BRAND_W \n    427     344     536     319     334     373     665     627     989     385 \n\n\nOleh karena itu, informasi brand yang kosong pada baris ke-1990 diisi dengan BRAND_S. Selanjutnya, periksa kembali apakah perintah berhasil atau tidak.\n\ndata$brand[is.na(data$brand)] &lt;- 'BRAND_S'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n \norder_date\ncustomer_id\nproduct_id\nbrand\nquantity\nitem_price\n\n\n\n\n1990\n9/2/2019\n14415\nP2094\nBRAND_S\n10\n590000\n\n\n\n\n\nBerikutnya, untuk mengganti nilai item_price yang kosong pada baris ke-21 dapat dilakukan dengan R diantaranya menggunakan perintah sebagai berikut.\n\ndata$item_price[is.na(data$item_price)] &lt;- mean(data$item_price, na.rm = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n \norder_date\ncustomer_id\nproduct_id\nbrand\nquantity\nitem_price\n\n\n\n\n21\n9/11/2019\n15786\nP3273\nBRAND_S\n12\n934670",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>*Missing Value*</span>"
+    ]
+  },
+  {
+    "objectID": "md-base.html",
+    "href": "md-base.html",
+    "title": "3  Manipulasi Data I",
+    "section": "",
+    "text": "3.1 Manipulasi data sebuah tabel\nManipulasi data di bagian ini menekankan pada penggunaan bahasa dasar R untuk mengelola data set. Data set yang dimaksud adalah berupa data frame yang tersusun atas baris dan kolom. Pengelolaan data terdiri dari manipulasi satu dan lebih dari satu data frame.\nPerintah manipulasi data sebuah data frame antara lain: memilih sebagian variabel (kolom), memilih sebagian objek (baris) dan mengurutkan data set berdasarkan nilai variabel tertentu. Kemudian, perintah manipulasi data lebih dari satu data frame antara lain: menyatukan (merge) dua tabel dengan ciri kolom yang sama dan menggabungkan (join) dua tabel.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Manipulasi Data I</span>"
+    ]
+  },
+  {
+    "objectID": "md-base.html#manipulasi-data-sebuah-tabel",
+    "href": "md-base.html#manipulasi-data-sebuah-tabel",
+    "title": "3  Manipulasi Data I",
+    "section": "",
+    "text": "3.1.1 Memilih sebagian data set\nMemilih sebagian kolom dilakukan ketika hanya sebagian informasi yang dibutuhkan dari sebuah data frame. Misal, Anda diminta untuk memberikan informasi brand dan berapa banyak yang terjual dari sebuah toko online.\n\nman_1 &lt;- pembelian[which(names(pembelian) == c(\"brand\", \"quantity\", \"item_price\"))]\n\n\n\n\n\n\n\n\nSelanjutnya, Anda diminta untuk memberikan informasi brand apa saja yang penjualannya lebih dari 400 item. Maka tindakan yang Anda lakukan adalah memilih sebagian baris dari hasil man_1.\n\nman_2 &lt;- man_1[which(man_1$quantity &gt; 400),]\n\n\n\n\n\n\n\n\n\n3.1.2 Mengurutkan objek\nSelanjutnya, Anda diminta untuk memberikan informasi brand mana yang paling banyak terjual. Maka tindakan yang Anda lakukan adalah mengurutkan nilai quantity sebagaimana hasil dari man_2, baik dari yang terbesar ke terkecil maupun sebaliknya.\n\nman_3 &lt;- man_2[order(man_2$quantity, decreasing = TRUE),]\n\n\n\n\n\n\n\n\n\n3.1.3 Aggregasi\nSetelah diurutkan, terlihat dengan jelas bahwa BRAND_P muncul lebih dari sekali. Maka tindakan yang Anda lakukan adalah menjumlahkan quantity berdasarkan brand. Perintah ini dikenal dengan aggregasi. Hasil aggregasi membuat tampilan quantity menjadi tidak terurut sehingga sebaiknya diurutkan kembali untuk mempercepat menangkap informasi.\n\n\n\n\n\n\nAggregasi\n\n\n\nProses merangkum data untuk menghasilkan informasi yang lebih ringkas dan terstruktur, rangkuman dapat berupa total, rata-rata, median, dan simpangan baku.\n\n\n\nman_4 &lt;- aggregate(cbind(quantity, item_price) ~ brand, data = man_3, FUN=sum)\n\n\n\n\n\n\n\n\n\n3.1.4 Menambah Variabel\nDari informasi urutan brand yang banyak terjual pada man_3, Anda diminta untuk membarikan informasi total penjualan. Maka tindakan yang Anda ambil adalah membuat kolom baru. Kolom baru tersebut adalah hasil perkalian antara quantity dengan item_price, yang selanjutnya diberi nama total_price.\n\nman_4$total_price &lt;- man_4$quantity * man_4$item_price",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Manipulasi Data I</span>"
+    ]
+  },
+  {
+    "objectID": "md-base.html#manipulasi-data-dua-tabel",
+    "href": "md-base.html#manipulasi-data-dua-tabel",
+    "title": "3  Manipulasi Data I",
+    "section": "3.2 Manipulasi data dua tabel",
+    "text": "3.2 Manipulasi data dua tabel\n\n3.2.1 Menyatukan tabel\nIstilah menyatukan dua tabel, merge, ditujukan untuk perintah menyatukan dua tabel dengan ciri kolom yang sama secara vertikal. Sebagai ilustrasi, data set pembelian dibagi menjadi dua bagian. Bagian pertama adalah informasi pembelian selama bulan Oktober dan bagian kedua adalah pembelian bulan November dan Desember. Secara berturut-turut data set pertama dan kedua diberi nama beli_1 dan beli_2.\n\nbeli_1 &lt;- pembelian[pembelian$order_date &gt;= \"2019-10-1\" & pembelian$order_date &lt; \"2019-11-1\",]\nbeli_2 &lt;- pembelian[pembelian$order_date &gt;= \"2019-11-1\" & pembelian$order_date &lt;= \"2019-12-31\",]\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMisal, Anda diminta untuk memberikan informasi pembelian di triwulan terakhir tahun 2019. Tindakan yang Anda lakukan adalah menyatukan data set pertama dan kedua karena memiliki informasi (kolom) yang sama.\n\nbeli_3 &lt;- rbind(beli_1, beli_2)\n\n\n\n\n\n\n\n\n\n3.2.2 Menggabung tabel\nMenggabung dua tabel, join, ditujukan untuk perintah menyatukan dua tabel dengan ciri kolom yang tidak harus sama secara horisontal. Penggabungan ini terbagi ke dalam empat jenis: left join, right join, inner join, dan outer join seperti pada Gambar 4.1.\nSebagai ilustrasi, Anda diminta menggabungkan data set pembelian dengan data set pelanggan, costumer.csv.\n\n\n\n\n\n\nFigure 3.1: Jenis penggabungan tabel\n\n\n\n\ncustomer &lt;- read.csv('customer.csv', sep = ',')\n\n\n\n\n\n\n\n\n\n3.2.2.1 Left join\n\nleft_j &lt;- merge(customer, pembelian, all.x = TRUE)\n\n\n\n\n\n\n\n\n\n3.2.2.2 Right join\n\nright_j &lt;- merge(customer, pembelian, all.y = TRUE)\n\n\n\n\n\n\n\n\n\n3.2.2.3 Inner join\n\ninner_j &lt;- merge(customer, pembelian)\n\n\n\n\n\n\n\n\n\n3.2.2.4 Outer join\n\nouter_j &lt;- merge(customer, pembelian, all.x = TRUE, all.y = TRUE)\n\n\n\n\n\n\n\n\n\ndim(left_j); dim(right_j); dim(inner_j); dim(outer_j)\n\n[1] 54584     9\n\n\n[1] 54584     9\n\n\n[1] 54584     9\n\n\n[1] 54584     9",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Manipulasi Data I</span>"
+    ]
+  },
+  {
+    "objectID": "md-fancy.html",
+    "href": "md-fancy.html",
+    "title": "4  Manipulasi Data II",
+    "section": "",
+    "text": "4.1 Manipulasi data sebuah tabel\nManipulasi data di bagian ini menekankan pada penggunaan tata bahasa yang elegan yang ditawarkan oleh R menggunakan dplyr karya fenomenal Wickham et al. (2023) untuk mengelola data set. Pengelolaan data terdiri dari manipulasi satu dan lebih dari satu data frame sebagaimana pada penggunaan bahasa dasar R. dplyr merupakan sebuah package yang memuat tata bahasa untuk keperluan manipulasi data dalam format data frame. Panduan ini memperkenalkan pipe operator, %&gt;%, sebuah fitur dari package magrittr yang berfungsi untuk menggabung beberapa perintah. Perintah ini digunakan dengan shortcut Ctrl + Shift + M.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Manipulasi Data II</span>"
+    ]
+  },
+  {
+    "objectID": "md-fancy.html#manipulasi-data-sebuah-tabel",
+    "href": "md-fancy.html#manipulasi-data-sebuah-tabel",
+    "title": "4  Manipulasi Data II",
+    "section": "",
+    "text": "4.1.1 Memilih sebagian data set\nKetika Anda diminta untuk memberikan informasi brand dan berapa banyak yang terjual dari sebuah toko online. Berikut perintah memilih beberapa kolom menggunakan dplyr.\n\nlibrary(dplyr)\nman_1 &lt;- pembelian %&gt;% select(c(brand:item_price))\n\nPerintah di atas digunakan karena kolom brand, quantity, dan item_price berurutan. Namun jika tidak berurutan, maka perintah yang dapat digunakan menuliskan nama kolom yang diperlukan.\n\nman_1 &lt;- pembelian %&gt;% select(c('brand', 'quantity', 'item_price'))\n\n\n\n\n\n\n\n\nSelanjutnya, untuk memberikan informasi brand apa saja yang penjualannya lebih dari 400 item, maka Anda memilih sebagian baris dari hasil man_1. Perintah yang digunakan untuk kebutuhan tersebut adalah filter.\n\nman_2 &lt;- man_1 %&gt;% filter(quantity &gt; 400)\n\n\n\n\n\n\n\n\n\n4.1.2 Mengurutkan objek\nSelanjutnya, untuk memberikan informasi brand mana yang paling banyak terjual, maka Anda mengurutkan nilai quantity sebagaimana hasil dari man_2, baik dari yang terbesar ke terkecil (descending) maupun sebaliknya (ascending).\n\nman_3 &lt;- man_2 %&gt;% arrange(desc(quantity)) \n\n\n\n\n\n\n\n\n\n4.1.3 aggregasi\nSetelah diurutkan, terlihat dengan jelas bahwa BRAND_P muncul lebih dari sekali. Maka tindakan yang Anda lakukan adalah menjumlahkan quantity berdasarkan brand. Perintah ini dikenal dengan aggregasi. Hasil aggregasi membuat tampilan quantity menjadi tidak terurut sehingga sebaiknya diurutkan kembali untuk mempercepat menangkap informasi.\n\nman_4 &lt;- man_3 %&gt;% group_by(brand) %&gt;% \n  summarise(quantity = sum(quantity), \n            item_price = sum(item_price)) %&gt;% \n  arrange(desc(quantity))\n\n\n\n\n\n\n\n\n\n4.1.4 Menambah Variabel\nVariabel baru dapat dibuat sebagai tambahan informasi pada Tabel 4.4. Tambahan informasi tersebut adalah total_price yang merupakan hasil perkalian antara quantity dengan item_price.\n\nman_5 &lt;-  man_4 %&gt;% mutate(totat_price = quantity * item_price)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Manipulasi Data II</span>"
+    ]
+  },
+  {
+    "objectID": "md-fancy.html#manipulasi-data-dua-tabel",
+    "href": "md-fancy.html#manipulasi-data-dua-tabel",
+    "title": "4  Manipulasi Data II",
+    "section": "4.2 Manipulasi data dua tabel",
+    "text": "4.2 Manipulasi data dua tabel\n\n4.2.1 Menyatukan tabel\nIstilah menyatukan dua tabel, merge, ditujukan untuk perintah menyatukan dua tabel dengan ciri kolom yang sama. Sebagai ilustrasi, data set pembelian dibagi menjadi dua bagian. Bagian pertama adalah informasi pembelian selama bulan Oktober dan bagian kedua adalah pembelian bulan November dan Desember. Secara berturut-turut data set pertama dan kedua diberi nama beli_1 dan beli_2.\n\nbeli_1 &lt;- pembelian %&gt;% filter(order_date &gt;= \"2019-10-1\" & order_date &lt; \"2019-11-1\")\nbeli_2 &lt;- pembelian %&gt;% filter(order_date &gt;= \"2019-11-1\" & order_date &lt;= \"2019-12-31\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nKemudian, Anda diminta untuk memberikan informasi pembelian di triwulan terakhir tahun 2019. Tindakan yang Anda lakukan adalah menyatukan data set pertama dan kedua karena memiliki informasi (kolom) yang sama.\n\nbeli_3 &lt;- bind_rows(beli_1, beli_2)\n\n\n\n\n\n\n\n\n\n4.2.2 Menggabung tabel\nMenggabung dua tabel, join, ditujukan untuk perintah mengombinasikan dua tabel secara horisontal. Penggabungan ini terbagi ke dalam empat jenis: left join, right join, inner join, dan outer join seperti pada Gambar 4.1. Karena penggabungan secara horisontal sehingga digunakan sebuah kolom sebagai penghubung. Kolom tersebut adalah identitas dari masing-masing tabel yaitu customer_id.\nSebagai ilustrasi, Anda diminta menggabungkan data set pembelian dengan data set pelanggan, costumer.csv.\n\n\n\n\n\n\nFigure 4.1: Jenis penggabungan tabel\n\n\n\n\n\n\n\n\n\n\n\n4.2.2.1 Left join\n\nl_join &lt;- customer %&gt;% left_join(pembelian, by = \"customer_id\")\n\n\n\n\n\n\n\n\n\n4.2.2.2 Right join\n\nr_join &lt;- customer %&gt;% right_join(pembelian, by = \"customer_id\")\n\n\n\n\n\n\n\n\n\n4.2.2.3 Inner join\n\nin_join &lt;- customer %&gt;% inner_join(pembelian, by = \"customer_id\")\n\n\n\n\n\n\n\n\n\n4.2.2.4 Outer join\n\nout_join &lt;- customer %&gt;% full_join(pembelian, by = \"customer_id\")\n\n\n\n\n\n\n\n\ndim(l_join); dim(r_join); dim(in_join); dim(out_join)\n\n[1] 54584     9\n\n\n[1] 54584     9\n\n\n[1] 54584     9\n\n\n[1] 54584     9\n\n\n\n\n\n\nWickham, Hadley, Romain François, Lionel Henry, Kirill Müller, and Davis Vaughan. 2023. “Dplyr: A Grammar of Data Manipulation.” https://CRAN.R-project.org/package=dplyr.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Manipulasi Data II</span>"
+    ]
+  },
+  {
+    "objectID": "konsep-basis-data.html",
+    "href": "konsep-basis-data.html",
+    "title": "5  Pengantar Basis Data",
+    "section": "",
+    "text": "5.1 Konsep dasar\nKumpulan data yang saling berhubungan yang disimpan secara bersama sedemikian rupa tanpa pengulangan (redundancy) yang tidak perlu, untuk memenuhi berbagai kebutuhan.\nBeberapa tujuan dari basis data adalah:\nBasis data digunakan jika:",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Pengantar Basis Data</span>"
+    ]
+  },
+  {
+    "objectID": "konsep-basis-data.html#konsep-dasar",
+    "href": "konsep-basis-data.html#konsep-dasar",
+    "title": "5  Pengantar Basis Data",
+    "section": "",
+    "text": "Basis data\n\n\n\nAlat yang dapat menyimpan sekumpulan data dan memungkinkan untuk membuat, membaca, memperbarui, dan menghapus data dengan cara tertentu (Stephens 2023).\n\n\n\n\n\nSecurity and protection, pencegahan akses terhadap pengguna yang tidak terdaftar (sah);\nFacilitation of multiple users, memungkinkan pengguna dalam jumlah yang besar;\nEase of data access and data change, kemudahan akses dan perubahan data;\nClarity, data disimpan dengan bahasa baku sehingga tidak membingungkan pengguna\nAvailability, data dapat diakses kapanpun.\n\n\n\nUkuran data besar\nData perlu diperbarui\nData relevan untuk jangka waktu yang cukup lama\nData digunakan secara bersamaan oleh banyak pengguna",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Pengantar Basis Data</span>"
+    ]
+  },
+  {
+    "objectID": "konsep-basis-data.html#sistem-dan-model-basis-data",
+    "href": "konsep-basis-data.html#sistem-dan-model-basis-data",
+    "title": "5  Pengantar Basis Data",
+    "section": "5.2 Sistem dan model basis data",
+    "text": "5.2 Sistem dan model basis data\n\n\n\n\n\n\nSistem basis data\n\n\n\nKumpulan dari program aplikasi yang mengelola (berinteraksi dengan) basis data disebut Database Management System (DBMS) (Hoffer, Ramesh, and Topi 2020)\n\n\nUntuk mengelola basis data dibutuhkan beberapa komponen antara lain (Foster 2023):\n\nHardware : Komputer, laptop, server, dan lain-lain\nSistem operasi : Windows, Linux, MacOS\nDatabase : data yang disimpan\nAplikasi : MySQL, PostgreSQL, SQL Server, bigquery\nUser : Admin, klien\nAplikasi lain : Web browser\n\nPenggunaan komponen-komponen di atas diilustrasikan pada Figure 5.1.\n\n\n\n\n\n\nFigure 5.1: Pendekatan basis data untuk manajemen data\n\n\n\n\n\n\n\n\n\nModel basis data\n\n\n\nKumpulan konseptual untuk menggambarkan data, hubungan data dan batasan data\n\n\nModel basis data yang diperkenalkan dalam panduan ini adalah entity relationship diagram (ERD). Model ini tersusun atas beberapa komponen sebagai berikut:\n\nEntity, objek (entitas) yang dikumpulkan informasinya seperti: mahasiswa, mata kuliah, pembeli, barang, dan sebagainya.\nAttribute, informasi yang menjelaskan entitas.\n\nprimary key, atribut yang digunakan sebagai identitas dari sebuah entity\nforeign key, atribut yang digunakan untuk melihat (lookup) ke entity pemilik relasi tersebut\n\nRelationship, hubungan antar entitas.\nCardinality, jumlah entitas yang dapat berelasi dengan entitas yang lain, seperti: 1-to-1, 1-to-N, N-to-1 dan N-to-N.\n\n\n\n\n\n\n\nFigure 5.2: Ilustrasi relasi mahasiswa dengan matakuliah\n\n\n\nIlustrasi pada Figure 5.2 di atas menunjukkan:\n\nEntity, mahasiswa dan matakuliah.\nAttribute,\n\nmahasiswa terdiri dari NIM sebagai primary key, nama, alamat, dan semester.\nmatakuliah, terdiri dari kode sebagai primary key dan nama.\nforeign key, terdiri dari NIM dan kode.\n\nRelationship, hubungannya berupa mahasiswa memilih matakuliah.\nCardinality, N-to-N, banyak mahasiswa memilih banyak matakuliah",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Pengantar Basis Data</span>"
+    ]
+  },
+  {
+    "objectID": "konsep-basis-data.html#pembuatan-basis-data",
+    "href": "konsep-basis-data.html#pembuatan-basis-data",
+    "title": "5  Pengantar Basis Data",
+    "section": "5.3 Pembuatan basis data",
+    "text": "5.3 Pembuatan basis data\n\n\n\n\n\n\nbigquery\n\n\n\nPlatform analisis data berbasis cloud yang dikembangkan oleh Google yang dirancang untuk mengolah dataset besar dengan kecepatan dan efisiensi tinggi\n\n\nAplikasi yang digunakan untuk membuat basis data adalah bigquery karena dapat digunakan dengan menggunakan akun Google. Berikut langkah-langkah pembuatan basis data di bigquery.\n\nmengunjungi laman Console Google Cloud selanjutnya akan muncul kotak dialog sebagaimana pada Figure 5.3 kemudian memilih layanan bigquery.\n\n\n\n\n\n\n\nFigure 5.3: Laman awal console Google Cloude\n\n\n\n\nMembuat projek (basis data) seperti pada Figure 5.4.\n\nmembuat basis data baru\nmemberi nama basis data dengan manajemen-data\nmenyelesaikan pembuatan basis data\n\n\n\n\n\n\n\n\nFigure 5.4: Membuat basis data\n\n\n\n\nmembuat tabel atau mengisi basis data dengan menggunakan data set yang sudah ada, pembelian.csv sebagaimana pada seperti Figure 5.5.\n\n\n\n\n\n\n\nFigure 5.5: Membuat tabel\n\n\n\n\nmengakses tabel pembelian di dalam schema (dataset) mandat pada basis data manajemen-data yang diilustrasikan pada Figure 5.6.\n\n\n\n\n\n\n\nFigure 5.6: Mengakses basis data\n\n\n\n\n\n\n\nFoster, SV, CE. & Godbole. 2023. Database Systems: A Pragmatic Approach 3rd Edition. New York, NY: CRC Press.\n\n\nHoffer, JA., V. Ramesh, and Heikki Topi. 2020. Modern Database Manajement 13th Edition. New York, NY: Pearson.\n\n\nStephens, Rod. 2023. Beginning Database Design Solutions: Understanding and Implementing Database Desing Concepts for the Cloud and Beyond 2nd Edition. New Jersey: John Wiley & Sons.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Pengantar Basis Data</span>"
+    ]
+  },
+  {
+    "objectID": "sql.html",
+    "href": "sql.html",
+    "title": "6  Structured query language",
+    "section": "",
+    "text": "6.1 Manipulasi data sebuah tabel\nStructured Query Language (SQL) adalah bahasa standar yang digunakan untuk mengelola dan memanipulasi data dalam sistem manajemen basis data relasional (RDBMS). Bahasa SQL dalam panduan ini menekankan pada kebutuhan manipulasi data, data manipulation language (MDL). Istilah perintah dalam bahasa SQL selanjutnya dikenal dengan query.\nPenggunaan bahasa SQL pada bagian ini dilakukan dengan memanfaatkan R. Package yang mengakomodasi bahasa SQL diantaranya adalah tidyquery dan sqldf. Package sqldf karya Grothendieck (2017) digunakan dalam panduan ini karena memiliki lebih banyak perintah manipulasi dibandingkan dengan tidyquery karya Cook (2023).",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Structured query language</span>"
+    ]
+  },
+  {
+    "objectID": "sql.html#manipulasi-data-sebuah-tabel",
+    "href": "sql.html#manipulasi-data-sebuah-tabel",
+    "title": "6  Structured query language",
+    "section": "",
+    "text": "6.1.1 Memilih sebagian data set\nKetika Anda diminta untuk memberikan informasi brand dan berapa banyak yang terjual dari sebuah toko online. Berikut perintah memilih beberapa kolom menggunakan sqldf.\n\nlibrary(sqldf)\nman1 &lt;- sqldf(\"SELECT brand, quantity, item_price FROM pembelian\")\n\n\n\n\n\n\n\n\nSelanjutnya, untuk memberikan informasi brand apa saja yang penjualannya lebih dari 400 item, maka Anda memilih sebagian baris dari hasil man1. Perintah yang digunakan untuk kebutuhan tersebut adalah where.\n\nman2 &lt;- sqldf(\"SELECT * FROM man1 \n               WHERE quantity &gt; 400\")\n\n\n\n\n\n\n\n\n\n6.1.2 Mengurutkan objek\nSelanjutnya, untuk memberikan informasi brand mana yang paling banyak terjual, maka Anda mengurutkan nilai quantity sebagaimana hasil dari man2, baik dari yang terbesar ke terkecil (descending) maupun sebaliknya (ascending).\n\nman3 &lt;- sqldf(\"SELECT * FROM man2 \n               ORDER BY quantity DESC\") \n\n\n\n\n\n\n\n\n\n6.1.3 Agregasi\nSetelah diurutkan, terlihat dengan jelas bahwa BRAND_P muncul lebih dari sekali. Maka tindakan yang Anda lakukan adalah menjumlahkan quantity berdasarkan brand. Perintah ini dikenal dengan aggregasi. Hasil aggregasi membuat tampilan quantity menjadi tidak terurut sehingga sebaiknya diurutkan kembali untuk mempercepat menangkap informasi.\n\nman4 &lt;- sqldf(\"SELECT \n    brand, \n    SUM(quantity) AS quantity, \n    SUM(item_price) AS item_price\nFROM \n    man3\nGROUP BY \n    brand\nORDER BY \n    quantity DESC\") \n\n\n\n\n\n\n\n\n\n6.1.4 Menambah Variabel\nVariabel baru dapat dibuat sebagai tambahan informasi pada Tabel 4.4. Tambahan informasi tersebut adalah total_price yang merupakan hasil perkalian antara quantity dengan item_price.\n\nman5 &lt;- sqldf(\"SELECT *, (quantity * item_price)  AS total_price FROM man4\")",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Structured query language</span>"
+    ]
+  },
+  {
+    "objectID": "sql.html#manipulasi-data-dua-tabel",
+    "href": "sql.html#manipulasi-data-dua-tabel",
+    "title": "6  Structured query language",
+    "section": "6.2 Manipulasi data dua tabel",
+    "text": "6.2 Manipulasi data dua tabel\n\n6.2.1 Menyatukan tabel\nIstilah menyatukan dua tabel, merge, ditujukan untuk perintah menyatukan dua tabel dengan ciri kolom yang sama. Sebagai ilustrasi, data set pembelian dibagi menjadi dua bagian. Bagian pertama adalah informasi pembelian selama bulan Oktober dan bagian kedua adalah pembelian bulan November dan Desember. Secara berturut-turut data set pertama dan kedua diberi nama beli_1 dan beli_2.\n\nbeli_1 &lt;- pembelian %&gt;% filter(order_date &gt;= \"2019-10-1\" & order_date &lt; \"2019-11-1\")\nbeli_2 &lt;- pembelian %&gt;% filter(order_date &gt;= \"2019-11-1\" & order_date &lt;= \"2019-12-31\")\n\nKemudian, Anda diminta untuk memberikan informasi pembelian di triwulan terakhir tahun 2019. Tindakan yang Anda lakukan adalah menyatukan data set pertama dan kedua karena memiliki informasi (kolom) yang sama.\n\nbeli_3 &lt;- sqldf(\"SELECT * FROM beli_1\n    UNION ALL\n    SELECT * FROM beli_2\")\n\n\n\n\n\n\n\n\n\n6.2.2 Menggabung tabel\nMenggabung dua tabel, join, ditujukan untuk perintah mengombinasikan dua tabel secara horisontal. Penggabungan ini terbagi ke dalam empat jenis: left join, right join, inner join, dan outer join seperti pada Gambar 4.1. Karena penggabungan secara horisontal sehingga digunakan sebuah kolom sebagai penghubung. Kolom tersebut adalah identitas dari masing-masing tabel yaitu customer_id.\nSebagai ilustrasi, Anda diminta menggabungkan data set pembelian dengan data set pelanggan, costumer.csv.\n\n\n\n\n\n\n\n6.2.2.1 Left join\n\nljoin &lt;- sqldf(\"SELECT * FROM customer LEFT JOIN pembelian\n  ON customer.customer_id = pembelian.customer_id\")\n\n\n\n\n\n\n\n\n\n6.2.2.2 Right join\n\nrjoin &lt;- sqldf(\"SELECT * FROM customer RIGHT JOIN pembelian\n  ON customer.customer_id = pembelian.customer_id\")\n\n\n\n\n\n\n\n\n\n6.2.2.3 Inner join\n\ninjoin &lt;- sqldf(\"SELECT * FROM customer INNER JOIN pembelian\n  ON customer.customer_id = pembelian.customer_id\")\n\n\n\n\n\n\n\n\n\n6.2.2.4 Outer join\n\noutjoin &lt;- sqldf(\"SELECT * FROM customer FULL JOIN pembelian\n  ON customer.customer_id = pembelian.customer_id\")\n\n\n\n\n\n\n\n\ndim(ljoin); dim(rjoin); dim(injoin); dim(outjoin)\n\n[1] 54584    10\n\n\n[1] 54584    10\n\n\n[1] 54584    10\n\n\n[1] 54584    10\n\n\n\n\n\n\nCook, Ian. 2023. “Tidyquery: Query ’ r ’ Data Frames with ’SQL’.” https://CRAN.R-project.org/package=tidyquery.\n\n\nGrothendieck, G. 2017. “Sqldf: Manipulate ’ r ’ Data Frames Using ’SQL’.” https://CRAN.R-project.org/package=sqldf.\n\n\nHoffer, JA., V. Ramesh, and Heikki Topi. 2020. Modern Database Manajement 13th Edition. New York, NY: Pearson.\n\n\nStephens, Rod. 2023. Beginning Database Design Solutions: Understanding and Implementing Database Desing Concepts for the Cloud and Beyond 2nd Edition. New Jersey: John Wiley & Sons.",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Structured query language</span>"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Cook, Ian. 2023. “Tidyquery: Query ’ r ’ Data Frames with\n’SQL’.” https://CRAN.R-project.org/package=tidyquery.\n\n\nFoster, SV, CE. & Godbole. 2023. Database Systems: A Pragmatic\nApproach 3rd Edition. New York, NY: CRC Press.\n\n\nGrothendieck, G. 2017. “Sqldf: Manipulate ’ r ’ Data Frames Using\n’SQL’.” https://CRAN.R-project.org/package=sqldf.\n\n\nHoffer, JA., V. Ramesh, and Heikki Topi. 2020. Modern Database\nManajement 13th Edition. New York, NY: Pearson.\n\n\nStephens, Rod. 2023. Beginning Database Design Solutions:\nUnderstanding and Implementing Database Desing Concepts for the Cloud\nand Beyond 2nd Edition. New Jersey: John Wiley & Sons.\n\n\nWickham, Hadley, Romain François, Lionel Henry, Kirill Müller, and Davis\nVaughan. 2023. “Dplyr: A Grammar of Data Manipulation.” https://CRAN.R-project.org/package=dplyr.",
+    "crumbs": [
+      "References"
+    ]
+  }
+]
