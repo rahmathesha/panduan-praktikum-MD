@@ -1,4 +1,4 @@
-# Manipulasi Data I {#sec-base}
+# Manipulasi Data I 
 
 ::: {.callout-note icon="false"}
 

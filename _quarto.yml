@@ -1,5 +1,6 @@
 project:
   type: book
+  output-dir: _book
 
 book:
   cover-image: images/pro1.png
@@ -22,8 +23,8 @@ bibliography: references.bib
 format:
   html:
     theme: cosmo
-  pdf:
-    documentclass: scrreprt
+#  pdf:
+#    documentclass: scrreprt
 
 editor: source
 
