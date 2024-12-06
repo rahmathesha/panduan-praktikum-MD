@@ -15,7 +15,7 @@ book:
     - md-fancy.qmd
     - konsep-basis-data.qmd
     - sql.qmd
-    - bqR.qmd
+#    - bqR.qmd
     - references.qmd
 
 bibliography: references.bib
